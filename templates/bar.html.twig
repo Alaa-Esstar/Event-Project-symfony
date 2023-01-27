@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+{% block bars %}
+	<!-- Page Wrapper -->
+	<div
+		id="wrapper">
+
+		<!-- Sidebar -->
+		<ul
+			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+			<!-- Sidebar - Brand -->
+			<a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('app_home') }}">
+				<div
+					class="sidebar-brand-icon">
+					<!--<i class="fas fa-laugh-wink"></i>-->
+					<img src="/img/logo-polytech.png" class="w-75">
+				</div>
+				<div class="sidebar-brand-text mx-3">Poly Events
+				</div>
+			</a>
+
+			<!-- Divider -->
+			<hr
+			class="sidebar-divider my-0">
+
+			<!-- Nav Item - Dashboard -->
+			<li class="nav-item">
+				<a class="nav-link" href="{{ path('app_home') }}">
+					<i class="fas fa-fw fa-home"></i>
+					<span>Accueil</span>
+				</a>
+			</li>
+
+			<!-- Divider -->
+			<hr class="sidebar-divider">
+			{% if app.user %}
+				{% if is_granted('ROLE_ADMIN') %}
+					<!-- Nav Item - content managment -->
+					<!-- Heading -->
+						<div class="sidebar-heading"> Event management</div>
+					<li class="nav-item">
+						<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ContentItem" aria-expanded="true" aria-controls="ContentItem">
+							<i class="fas fa-fw fa-calendar-week"></i>
+							<span>Events</span>
+						</a>
+						<div id="ContentItem" class="collapse" aria-labelledby="ContentItem" data-parent="#accordionSidebar">
+							<div class="bg-white py-2 collapse-inner rounded">
+								<a class="collapse-item" href="{{ path('admin_app_event') }}">Event list</a>
+								<a class="collapse-item" href="{{ path('admin_app_event_new') }}">Ajouter event</a>
+							</div>
+						</div>
+					</li>
+					<!-- Nav Item - content managment end -->
+					<!-- Heading -->
+					<div class="sidebar-heading">
+						Users management
+					</div>
+					<!-- Nav Item - User managment -->
+					<li class="nav-item">
+						<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#UserItem" aria-expanded="true" aria-controls="UserItem">
+							<i class="fas fa-fw fa-users"></i>
+							<span>Users</span>
+						</a>
+						<div id="UserItem" class="collapse" aria-labelledby="UserItem" data-parent="#accordionSidebar">
+							<div class="bg-white py-2 collapse-inner rounded">
+								<a class="collapse-item" href="{{ path('app_admin_user') }}">Users list</a>
+							</div>
+						</div>
+					</li>
+					<!-- Nav Item - User managment end -->
+				{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_event') }}">
+							<i class="fas fa-fw fa-calendar-week"></i>
+							<span>Events</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_event_new') }}">
+							<i class="fas fa-fw fa-calendar-week"></i>
+							<span>Add Event</span>
+						</a>
+					</li>
+				{% endif %}
+			{% else %}
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('app_event') }}">
+						<i class="fas fa-fw fa-calendar-week"></i>
+						<span>Events</span>
+					</a>
+				</li>
+			{% endif %}
+
+			<!-- Divider -->
+			<hr
+			class="sidebar-divider d-none d-md-block">
+			<!-- Sidebar Toggler (Sidebar) -->
+			<div class="text-center d-none d-md-inline">
+				<button class="rounded-circle border-0" id="sidebarToggle"></button>
+			</div>
+		</ul>
+		<!-- End of Sidebar -->
+		<!-- Content Wrapper -->
+		<div
+			id="content-wrapper" class="d-flex flex-column">
+
+			<!-- Main Content -->
+			<div
+				id="content">
+
+				<!-- Topbar -->
+				<nav
+					class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
+
+					<!-- Sidebar Toggle (Topbar) -->
+					<button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
+						<i class="fa fa-bars"></i>
+					</button>
+
+					<ul class="navbar-nav ml-auto">
+						{% if app.user %}
+							<div class="topbar-divider d-none d-sm-block"></div>
+
+							<!-- Nav Item - User Information -->
+
+							<li class="nav-item dropdown no-arrow">
+								<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.firstname }}
+										{{ app.user.lastname }}</span>
+									<img class="img-profile rounded-circle" src="{{ asset('img/undraw_profile.svg') }}">
+								</a>
+								<!-- Dropdown - User Information -->
+								<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+									<a class="dropdown-item" href="{{ path('app_admin_user_edit', {id:app.user.id}) }}">
+										<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+										Profile
+									</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+										<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+										Logout
+									</a>
+								</div>
+							</li>
+						{% else %}
+							<li class="nav-item">
+								<a href="{{ path('app_login') }}" class="nav-link text-gray-600">Connexion</a>
+							</li>
+							<div class="topbar-divider d-none d-sm-block"></div>
+							<li class="nav-item">
+								<a href="{{ path('app_register') }}" class="nav-link text-gray-600">Inscription</a>
+							</li>
+						{% endif %}
+
+					</ul>
+
+				</nav>
+				<!-- End of Topbar -->
+				<!-- Begin Page Content -->
+				{% for message in app.flashes('success') %}
+					<div class="alert alert-success">
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% block body %}{% endblock %}
+			</div>
+			<!-- End of Main Content -->
+			<!-- Footer -->
+			<footer class="sticky-footer bg-white mt-3">
+				<div class="container my-auto">
+					<div class="copyright text-center my-auto">
+						<span>Copyright &copy; Poly Event
+							{{ date('now')|date('Y') }}</span>
+					</div>
+				</div>
+			</footer>
+			<!-- End of Footer -->
+
+		</div>
+		<!-- End of Content Wrapper -->
+
+	</div>
+	<!-- End of Page Wrapper -->
+
+	<!-- Scroll to Top Button-->
+	<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fas fa-angle-up"></i>
+	</a>
+	{% if app.user %}
+		<!-- Logout Modal-->
+		<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Se déconnecter .</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">Sélectionnez "Déconnexion" ci-dessous si vous êtes prêt à mettre fin à votre session actuelle.</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
+						<a class="btn btn-primary" href="{{ path('app_logout') }}">Déconnexion</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

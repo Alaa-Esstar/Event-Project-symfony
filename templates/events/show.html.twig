@@ -1,0 +1,104 @@
+{% extends 'bar.html.twig' %}
+
+{% block body %}
+	<main>
+		<header class="border-bottom bg-white mb-4">
+			<div class="container-fluid px-4">
+				<div class="row pt-3">
+					<div class="col mb-3">
+						<h4>
+							<i class="fa fa-user"></i>
+							Account Settings - Profile
+						</h4>
+					</div>
+				</div>
+			</div>
+		</header>
+		<!-- Main page content-->
+		<div class="container-xl px-4 mt-4">
+			<hr class="mt-0 mb-4">
+			<div class="row">
+				<div class="col-xl-4">
+					<div class="row">
+						<div class="col">
+							<div class="card mb-4 mb-xl-0">
+								<div class="card-header text-center">Number of Participants</div>
+								<div class="card-body text-center">
+
+									<div class="btn btn-primary" type="button">{{ event.eventparticipants|length }}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-5">
+						<div class="col">
+							<div class="card mb-4 mb-xl-0">
+								<div class="card-header text-center">Events Logistics</div>
+								<div class="card-body text-center">
+									{% for log in event.eventLogistocs %}
+										Log
+										{{ loop.index }}
+										<br>
+										nom :
+										{{ log.name }}
+										<br>
+										Description :
+										{{ log.description }}
+										{% if not loop.last %}
+											<hr>
+										{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div
+					class="col-xl-8">
+					<!-- Account details card-->
+					<div class="card mb-4">
+						<div class="card-header">Event Details</div>
+						<div class="card-body">
+							<div class="form-group">
+								<div class="font-weight-bold">
+									Titre
+								</div>
+								{{ event.name }}
+							</div>
+							<div class="form-group">
+								<div class="font-weight-bold">
+									Description
+								</div>
+								{{ event.description }}
+							</div>
+							<div class="form-group">
+								<div class="font-weight-bold">
+									Date start
+								</div>
+								{{ event.datestart|date('Y-m-d') }}
+							</div>
+							<div class="form-group">
+								<div class="font-weight-bold">
+									Date end
+								</div>
+								{{ event.dateend|date('Y-m-d') }}
+							</div>
+							<div class="form-group">
+								<div class="font-weight-bold">
+									Place
+								</div>
+								{{ event.place }}
+							</div>
+							<div class="form-group">
+								<div class="font-weight-bold">
+									Price
+								</div>
+								{{ event.price }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}

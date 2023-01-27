@@ -1,0 +1,81 @@
+{% extends 'bar.html.twig' %}
+
+{% block body %}
+	<div class="container-fluid mt-3">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">Liste des evenements</h1>
+		</div>
+		<div class="row">
+			{% for event in events %}
+				<div class="col-md-4">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3 d-flex">
+							<h6 class="m-0 font-weight-bold text-primary mr-auto">{{ event.name }}</h6>
+							<span class="font-weight-bold">N°participant :
+								{{ event.eventParticipants|length }}</span>
+						</div>
+						<div class="card-body">
+							<div>
+								{{  event.description|length > 200 ? event.description|slice(0, 200) ~ '...' : event.description }}
+							</div>
+							<hr>
+							<div>
+								Place :
+								<span class="font-weight-bold">
+									{{ event.place }}
+								</span>
+							</div>
+							<div class="mt-2">
+								Prix :
+								<span class="font-weight-bold">
+									{{ event.price }}
+									DT
+								</span>
+							</div>
+							validitée ?
+							{% if event.isvalid == true %}
+								<div class="btn btn-sm btn-success">
+									<i class="fa fa-check"></i>
+								</div>
+							{% else %}
+								<div class="btn btn-sm btn-danger">
+									<i class="fa fa-times"></i>
+								</div>
+							{% endif %}
+							<br>
+							<br>
+							Archive ?
+							{% if event.isarchive == true %}
+								<div class="btn btn-sm btn-success">
+									<i class="fa fa-check"></i>
+								</div>
+							{% else %}
+								<div class="btn btn-sm btn-danger">
+									<i class="fa fa-times"></i>
+								</div>
+							{% endif %}
+
+
+						</div>
+						<div class="card-footer">
+							Organiser par :
+							<span class="font-weight-bold">
+								{{ event.user.firstname }}
+								{{ event.user.lastname }}
+							</span>
+							<div class="float-right">
+								<a href="{{ path('admin_app_event_edit', {id:event.id}) }}" class="btn btn-info">edit</a>
+								<a href="{{ path('admin_app_event_delet', {id:event.id}) }}" class="btn btn-danger">delet</a>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<a href="{{ path('admin_app_event_new') }}" class="btn btn-primary btn-user btn-block">Ajouter evenement
+					<i class="fa fa-plus"></i>
+				</a>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

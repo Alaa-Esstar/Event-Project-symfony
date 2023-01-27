@@ -1,0 +1,76 @@
+{% extends 'bar.html.twig' %}
+
+{% block body %}
+	<div class="container-fluid mt-3">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">Liste des evenements</h1>
+		</div>
+		<div class="row">
+			{% for event in events %}
+				<div class="col-md-4">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3 d-flex">
+							<h6 class="m-0 font-weight-bold text-primary mr-auto">{{ event.name }}</h6>
+							<span class="font-weight-bold">N°participant :
+								{{ event.eventParticipants|length }}</span>
+						</div>
+						<div class="card-body">
+							<div>
+								{{  event.description|length > 200 ? event.description|slice(0, 200) ~ '...' : event.description }}
+							</div>
+							<hr>
+							<div>
+								Place :
+								<span class="font-weight-bold">
+									{{ event.place }}
+								</span>
+							</div>
+							<div class="mt-2">
+								Prix :
+								<span class="font-weight-bold">
+									{{ event.price }}
+									DT
+								</span>
+							</div>
+						</div>
+						<div class="card-footer">
+							Organiser par :
+							<span class="font-weight-bold">
+								{{ event.user.firstname }}
+								{{ event.user.lastname }}
+							</span>
+							<div class="float-right">
+								<a href="{{ path('app_event_show', {id:event.id}) }}" class="btn btn-primary">Show</a>
+								{% if app.user %}
+									{% if not is_granted("ROLE_ADMIN") %}
+										{% set parti = 1 %}
+										{% for part in event.eventParticipants %}
+											{% if part.user == app.user %}
+												{% set id_part = part.id %}
+												{% set parti = 0 %}
+											{% endif %}
+										{% endfor %}
+										{% if parti == 1 %}
+											<a href="{{ path('app_event_participate', {id:event.id}) }}" class="btn btn-warning">participate</a>
+										{% else %}
+											{% for part in event.eventParticipants %}
+												{% if part.user == app.user %}
+													<a href="{{ path('app_event_noparticipate', {id:part.id}) }}" class="btn btn-danger">Remove participation</a>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endif %}
+								{% endif %}
+							</div>
+
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<div class="col text-center mb-4">
+					<h3>Pas d'evenement pour le moment</h3>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

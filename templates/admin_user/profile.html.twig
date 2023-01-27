@@ -1,0 +1,105 @@
+{% extends 'bar.html.twig' %}
+
+{% block body %}
+	<main>
+		<header class="border-bottom bg-white mb-4">
+			<div class="container-fluid px-4">
+				<div class="row pt-3">
+					<div class="col mb-3">
+						<h4>
+							<i class="fa fa-user"></i>
+							Account Settings - Profile
+						</h4>
+					</div>
+				</div>
+			</div>
+		</header>
+		<!-- Main page content-->
+		<div class="container-xl px-4 mt-4">
+
+			<hr class="mt-0 mb-4">
+			<div class="row">
+				{% if app.request.attributes.get('_route') != "app_admin_user_new" %}
+					<div class="col-xl-4">
+						<div class="row">
+							<div class="col">
+								<div class="card mb-4 mb-xl-0">
+									<div class="card-header text-center">Number of Events</div>
+									<div class="card-body text-center">
+
+										<div class="btn btn-primary" type="button">{{ user.events|length }}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-5">
+							<div class="col">
+								<div class="card mb-4 mb-xl-0">
+									<div class="card-header text-center">Number of participations</div>
+									<div class="card-body text-center">
+
+										<div class="btn btn-primary" type="button">{{ participants|length }}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				<div
+					class="col-xl-8">
+					<!-- Account details card-->
+					<div class="card mb-4">
+						<div class="card-header">Account Details</div>
+						<div class="card-body">
+							{{ form_start(userForm) }}
+							<div class="form-group">
+								{{ form_row(userForm.email) }}
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.password) }}
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col">
+										{{ form_row(userForm.firstname) }}
+									</div>
+									<div class="col">
+										{{ form_row(userForm.lastname) }}
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.matricule) }}
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.CIN) }}
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.passport) }}
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.tel) }}
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.section_bac) }}
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.date_bac) }}
+							</div>
+							<div class="form-group">
+								{{ form_row(userForm.birthday) }}
+							</div>
+							<div class="custom-control custom-checkbox">
+								{{ form_widget(userForm.is_valid) }}
+								{{ form_label(userForm.is_valid) }}
+							</div>
+							<button type="submit" class="btn btn-primary mt-3">Save changes</button>
+
+							{{ form_end(userForm) }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}

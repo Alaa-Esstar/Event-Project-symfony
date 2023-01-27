@@ -1,0 +1,73 @@
+{% extends 'bar.html.twig' %}
+
+{% block body %}
+	<main>
+		<header class="border-bottom bg-white mb-4">
+			<div class="container-fluid px-4">
+				<div class="row pt-3">
+					<div class="col mb-3">
+						<h4>
+							<i class="fa fa-user"></i>
+							Users List
+						</h4>
+					</div>
+					<div class="offset-col mb-3">
+						<a class="btn btn-sm btn-light text-primary" href="{{ path('app_admin_user_new') }}">
+							<i class="fas fa-user-plus"></i>
+							Add New User
+						</a>
+					</div>
+				</div>
+			</div>
+		</header>
+		<!-- Main page content-->
+		<div class="container-fluid">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h6 class="m-0 font-weight-bold text-primary">Table of Users</h6>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Email</th>
+									<th>Name</th>
+									<th>matricule</th>
+									<th>Valid</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for user in users %}
+									<tr>
+										<td>{{ user.email }}</td>
+										<td>{{ user.firstname }}
+											{{ user.lastname }}</td>
+										<td>{{ user.matricule }}</td>
+										<td>
+											{% if user.isvalid %}
+												<div class="btn btn-sm btn-success">
+													<i class="fa fa-check"></i>
+												</div>
+											{% else %}
+												<div class="btn btn-sm btn-danger">
+													<i class="fa fa-times"></i>
+												</div>
+											{% endif %}
+										</td>
+										<td>
+											<a class="btn btn-sm btn-primary" href="{{ path('app_admin_user_edit', {id:user.id}) }}">
+												<i class="fa fa-eye"></i>
+											</a>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'bar.html.twig' %}
+
+{% block body %}
+	<div class="container-fluid mt-3">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">Ajouter un evenement</h1>
+		</div>
+		<div class="card shadow mb-4">
+			<div class="card-header">
+				<h2>Information de l'evenement</h2>
+			</div>
+			<div class="card-body">
+				{{ form_start(eventForm) }}
+				<div class="form-group">
+					{{ form_row(eventForm.name) }}
+				</div>
+				<div class="form-group">
+					{{ form_row(eventForm.description) }}
+				</div>
+				<div class="form-group d-flex">
+					<div>
+						{{ form_row(eventForm.date_start) }}
+					</div>
+					{% if app.request.attributes.get('_route') == "admin_app_event_edit" %}
+						<div class="ml-5">
+							{{ form_row(eventForm.date_end) }}
+						</div>
+					{% endif %}
+				</div>
+				<div class="form-group">
+					{{ form_row(eventForm.price) }}
+				</div>
+				<div class="form-group">
+					{{ form_row(eventForm.place) }}
+				</div>
+				{% if app.request.attributes.get('_route') == "admin_app_event_edit" %}
+					<div class="custom-control custom-checkbox">
+						{{ form_widget(eventForm.is_valid) }}
+						{{ form_label(eventForm.is_valid) }}
+					</div>
+					<div class="custom-control custom-checkbox">
+						{{ form_widget(eventForm.is_archive) }}
+						{{ form_label(eventForm.is_archive) }}
+					</div>
+					<div class="form-group">
+						{{ form_row(eventForm.user) }}
+					</div>
+				{% endif %}
+				<input type="submit" value="Enregister" class="btn btn-primary btn-user btn-block">
+				{{ form_end(eventForm) }}
+			</div>
+		</div>
+		{% if app.request.attributes.get('_route') == "admin_app_event_edit" %}
+			<div class="card shadow mb-4">
+				<div class="card-header d-flex  align-items-center">
+					<h2>Logistics de l'evenement</h2>
+					<div class="btn btn-sm btn-primary ml-auto" data-toggle="modal" data-target="#LogModal">
+						<i class="fas fa-plus"></i>
+						Ajouter une demande de logistic
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Nom</th>
+									<th>Description</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for log in event.eventLogistocs %}
+									<tr>
+										<td>{{ log.name }}</td>
+										<td>{{ log.description }}</td>
+										<td>
+											<div class="btn btn-sm btn-info" data-toggle="modal" data-target="#LogModal{{ log.id }}">Edit</div>
+											<!-- Modal log -->
+											<div class="modal fade" id="LogModal{{ log.id }}" tabindex="-1" role="dialog" aria-labelledby="LogModalLabel{{ log.id }}" aria-hidden="true">
+												<div class="modal-dialog" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="LogModalLabel{{ log.id }}">Edit demande log</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body">
+															<div class="form-group">
+																<label for="log_name-{{ log.id }}">Nom du log</label>
+																<input id="log_name-{{ log.id }}" class="form-control" value="{{ log.name }}">
+															</div>
+															<div class="form-group">
+																<label for="log_desc-{{ log.id }}">description du log</label>
+																<input id="log_desc-{{ log.id }}" class="form-control" value="{{ log.description }}">
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+															<button type="button" class="btn btn-primary" onclick="editLog({{ log.id }}, this)">Enregister</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<a href="{{ path('admin_app_event_delet_log', {id:log.id}) }}" class="btn btn-sm btn-danger">Delet</a>
+										</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="3">Pas de logistc</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+	{% if app.request.attributes.get('_route') == "admin_app_event_edit" %}
+		<!-- Modal log -->
+		<div class="modal fade" id="LogModal" tabindex="-1" role="dialog" aria-labelledby="LogModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="LogModalLabel">Ajouter un demande log</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="log_name">Nom du log</label>
+							<input id="log_name" class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="log_desc">description du log</label>
+							<input id="log_desc" class="form-control">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" onclick="addLog({{ event.id }}, this)">Enregister</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		function addLog(id, obj) {
+$.ajax({
+url: "{{ path('admin_app_event_add_log') }}",
+data: {
+id_event: id,
+nom: $('#log_name').val(),
+desc: $('#log_desc').val()
+},
+beforeSend: function () {
+$(obj).prop('disabled', true);
+$(obj).html(`<i class="fas fa-spinner fa-spin"></i>`);
+},
+success: function (data) {
+$(obj).prop('disabled', false);
+$.notify("ajouter terminer !", 'success');
+location.reload();
+},
+error: function (err) {
+$(obj).prop('disabled', false);
+$(".ui-pnotify").remove();
+$.notify("Erreur d'ajout", "error");
+}
+});
+}
+
+function editLog(id_log, obj) {
+$.ajax({
+url: "{{ path('admin_app_event_edit_log') }}",
+data: {
+id_log: id_log,
+nom: $('#log_name-' + id_log).val(),
+desc: $('#log_desc-' + id_log).val()
+},
+beforeSend: function () {
+$(obj).prop('disabled', true);
+$(obj).html(`<i class="fas fa-spinner fa-spin"></i>`);
+},
+success: function (data) {
+$(obj).prop('disabled', false);
+$.notify("ajouter terminer !", 'success');
+location.reload();
+},
+error: function (err) {
+$(obj).prop('disabled', false);
+$(".ui-pnotify").remove();
+$.notify("Erreur d'ajout", "error");
+}
+});
+}
+	</script>
+{% endblock %}
